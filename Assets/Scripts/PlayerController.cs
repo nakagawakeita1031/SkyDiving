@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
     [Header("プレイヤーの降下速度")]
     //プレイヤーの降下速度
     public float fallSpeed;
+    //着水or未着水をbool型のinWaterで設定
+    [Header("着水判定。着水済みならtrue")]
+    public bool inWater;
     //アタッチしたオブジェクトの物理特性情報を操作する変数
     private Rigidbody rb;
 
@@ -32,13 +35,28 @@ public class PlayerController : MonoBehaviour
         z = Input.GetAxis("Vertical");
 
         //キーを入力した際に正しいかどうかチェック
-        Debug.Log(x);
-        Debug.Log(z);
+        //Debug.Log(x);
+        //Debug.Log(z);
 
         //オブジェクトの物理特性情報を変更(x速度,y速度,z速度)
         rb.velocity = new Vector3(x * moveSpeed, -fallSpeed, z * moveSpeed);
         //変更した情報を表示する
-        Debug.Log(rb.velocity);
+        //Debug.Log(rb.velocity);
+    }
+
+    //IsTriggerがONでコライダーが持つゲームオブジェクトを通過した際に呼び出される
+    private void OnTriggerEnter(Collider col)
+    {
+        //通過したゲームオブジェクトのコライダーのタグが"Water"でbool値がfalse(未着水)なら
+        if (col.gameObject.tag == "Water" && inWater == false)
+        {
+            //bool値を着水済み(true)にする
+            inWater = true;
+
+            //TODO 水しぶきエフェクトを生成
+
+            Debug.Log("着水" + inWater);
+        }
     }
     // Update is called once per frame
     void Update()
