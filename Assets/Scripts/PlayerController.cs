@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,31 +9,37 @@ public class PlayerController : MonoBehaviour
     [Header("プレイヤーの移動速度")]
     //プレイヤーの移動速度
     public float moveSpeed;
+
     [Header("プレイヤーの降下速度")]
     //プレイヤーの降下速度
     public float fallSpeed;
+
     //着水or未着水をbool型のinWaterで設定
     [Header("着水判定。着水済みならtrue")]
     public bool inWater;
+
     //水しぶきエフェクト用の変数。Prefabをアサインするため。
     [SerializeField, Header("水しぶきエフェクト")]
     private GameObject splashEffectPrefab = null;
+
     //水しぶきの効果音用の変数Audioアサイン
     [SerializeField,Header("水しぶきSE")]
     private AudioClip splashSE = null;
 
     //アタッチしたオブジェクトの物理特性情報を操作する変数
     private Rigidbody rb;
-
     private float x;
     private float z;
 
+    //降下中キャラの角度を変更(水面に頭)
+    private Vector3 straightRotation = new Vector3(180, 0, 0);
 
     // Start is called before the first frame update
     void Start()
     {
         //まずはじめにアタッチするオブジェクトの物理特性情報を取得し変数に格納
         rb = GetComponent<Rigidbody>();
+
     }
 
     private void FixedUpdate()
@@ -69,12 +76,32 @@ public class PlayerController : MonoBehaviour
 
             AudioSource.PlayClipAtPoint(splashSE, transform.position);
 
-            
+            //着水後コルーチンメソッドを呼び出す
+            StartCoroutine(OutOfWater());
 
             //Debug.Log("着水" + inWater);
         }
 
 
+    }
+
+    /// <summary>
+    /// 水面に顔を出す
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator OutOfWater()
+    {
+        //1秒待つ
+        yield return new WaitForSeconds(1.0f);
+
+        //RigidbodyコンポーネントのIsKinematicにスイッチを入れてキャラの操作を停止する
+        rb.isKinematic = true;
+
+        //キャラの姿勢(回転)を変更する
+        transform.eulerAngles = new Vector3(-30, 180, 0);
+
+        //DOTweenを利用して、１秒かけて水中から水面へとキャラを移動させる
+        transform.DOMoveY(0.05f, 1.0f);
     }
     // Update is called once per frame
     void Update()
