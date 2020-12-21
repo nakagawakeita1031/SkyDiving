@@ -2566,6 +2566,8 @@ MonoBehaviour:
   moveSpeed: 10
   fallSpeed: 15
   inWater: 0
+  splashEffectPrefab: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c, type: 3}
+  splashSE: {fileID: 8300000, guid: 5c0e46c14dcdc0948b813774c9cfa42b, type: 3}
 --- !u!1 &6786679126833515625
 GameObject:
   m_ObjectHideFlags: 0

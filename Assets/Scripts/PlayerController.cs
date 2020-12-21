@@ -14,6 +14,13 @@ public class PlayerController : MonoBehaviour
     //着水or未着水をbool型のinWaterで設定
     [Header("着水判定。着水済みならtrue")]
     public bool inWater;
+    //水しぶきエフェクト用の変数。Prefabをアサインするため。
+    [SerializeField, Header("水しぶきエフェクト")]
+    private GameObject splashEffectPrefab = null;
+    //水しぶきの効果音用の変数Audioアサイン
+    [SerializeField,Header("水しぶきSE")]
+    private AudioClip splashSE = null;
+
     //アタッチしたオブジェクトの物理特性情報を操作する変数
     private Rigidbody rb;
 
@@ -53,10 +60,21 @@ public class PlayerController : MonoBehaviour
             //bool値を着水済み(true)にする
             inWater = true;
 
-            //TODO 水しぶきエフェクトを生成
+            //水しぶきエフェクトを生成し、生成された水しぶきエフェクトをeffect変数に代入
+            GameObject effect = Instantiate(splashEffectPrefab, transform.position, Quaternion.identity);
+            //水しぶきのエフェクトの発生地点をx,yそしてzから-0.5の位置に発生させる
+            effect.transform.position = new Vector3(effect.transform.position.x, effect.transform.position.y, effect.transform.position.z - 0.5f);
+            //effect変数を利用して、エフェクトを２秒後に破壊する
+            Destroy(effect, 2.0f);
 
-            Debug.Log("着水" + inWater);
+            AudioSource.PlayClipAtPoint(splashSE, transform.position);
+
+            
+
+            //Debug.Log("着水" + inWater);
         }
+
+
     }
     // Update is called once per frame
     void Update()
