@@ -40,6 +40,9 @@ public class PlayerController : MonoBehaviour
         //まずはじめにアタッチするオブジェクトの物理特性情報を取得し変数に格納
         rb = GetComponent<Rigidbody>();
 
+        //初期の姿勢を設定(頭を水面方向に向ける)
+        transform.eulerAngles = straightRotation;
+
     }
 
     private void FixedUpdate()
