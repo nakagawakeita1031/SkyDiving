@@ -5,6 +5,9 @@ using DG.Tweening;
 
 public class FlowerCicle : MonoBehaviour
 {
+    [Header("花輪通過時の得点")]
+    public int point;
+
     // Start is called before the first frame update
     void Start()
     {

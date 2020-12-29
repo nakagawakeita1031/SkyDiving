@@ -34,6 +34,9 @@ public class PlayerController : MonoBehaviour
     //降下中キャラの角度を変更(水面に頭)
     private Vector3 straightRotation = new Vector3(180, 0, 0);
 
+    //花輪を通過した際の得点の合計値管理用
+    private int score;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,6 +88,21 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("着水" + inWater);
         }
 
+        //侵入したゲームオブジェクトのTagがFlowerCircleなら
+        if (col.gameObject.tag == "FlowerCircle")
+        {
+            //Debug.Log("花輪ゲット");
+
+            //侵入したFlowerCircle Tagを持つゲームオブジェクト(Collider)の親オブジェクト(FlowerCircle)
+            //にアタッチされているFlowerCircleスクリプトを取得して、point変数を参照し、得点を加算する
+            score += col.transform.parent.GetComponent<FlowerCicle>().point;
+
+            //文字列に追加してint型やfloat型の情報を表示する場合には、ToString()メソッドを省略できる
+            Debug.Log("現在の得点：" + score);
+            //TODO得点加算を追加する
+
+            //TODO画面に表示されている得点表示を更新する処理を追加する
+        }
 
     }
 
