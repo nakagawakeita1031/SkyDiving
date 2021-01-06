@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,6 +37,10 @@ public class PlayerController : MonoBehaviour
 
     //花輪を通過した際の得点の合計値管理用
     private int score;
+
+    //Textオブジェクトと紐づけ
+    [SerializeField]
+    private Text txtScore;
 
     // Start is called before the first frame update
     void Start()
@@ -98,9 +103,9 @@ public class PlayerController : MonoBehaviour
             score += col.transform.parent.GetComponent<FlowerCicle>().point;
 
             //文字列に追加してint型やfloat型の情報を表示する場合には、ToString()メソッドを省略できる
-            Debug.Log("現在の得点：" + score);
+            //Debug.Log("現在の得点：" + score);
             //TODO得点加算を追加する
-
+            txtScore.text = score.ToString();
             //TODO画面に表示されている得点表示を更新する処理を追加する
         }
 
