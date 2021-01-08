@@ -29,7 +29,7 @@ public class Distance : MonoBehaviour
         //距離が0以下になったらゴールしたと判定して距離の計算は行わないようにする
         if (isGoal == true)
         {
-            Debug.Log("trueになったから距離計算終了");
+            //Debug.Log("trueになったから距離計算終了");
             return;
         }
 
@@ -44,7 +44,7 @@ public class Distance : MonoBehaviour
         if (distance <= 0)
         {
             isGoal = true;
-            Debug.Log("trueになった");
+            //Debug.Log("trueになった");
         }
     }
 }
