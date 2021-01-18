@@ -37,14 +37,16 @@ public class Distance : MonoBehaviour
         distance = transform.position.y - waterBasicDaytime.transform.position.y;
 
 
-        //文字列にしてゲーム画面上に距離を表示する
-        dstText.text = distance.ToString("F2");
+        
 
         //距離が0に以下になったら
         if (distance <= 0)
         {
             isGoal = true;
+            distance = 0f;
             //Debug.Log("trueになった");
         }
+        //文字列にしてゲーム画面上に距離を表示する
+        dstText.text = distance.ToString("F2");
     }
 }

@@ -42,6 +42,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Text txtScore;
 
+    [SerializeField]
+    private Button btnChangeAttitude;
+
     //キャラの状態の種類
     public enum AttitudeType
     {
@@ -54,6 +57,15 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 proneRotation = new Vector3(-90, 0, 0);
 
+    //姿勢変更が可能になるまでの計測用変数
+    private float attitudeTimer;
+
+    //姿勢変更が可能になるまでのチャージ時間変数
+    private float changeTime = 2.0f;
+
+    [SerializeField]
+    private Image imgGauge;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,6 +77,9 @@ public class PlayerController : MonoBehaviour
 
         //現在の姿勢を「直滑空」に変更(今までの姿勢)
         attitudeType = AttitudeType.Straight;
+
+        //ボタンのOnClickイベントにChangeAttitudeメソッドを追加する
+        btnChangeAttitude.onClick.AddListener(ChangeAttitude);
 
     }
 
@@ -153,6 +168,41 @@ public class PlayerController : MonoBehaviour
             //姿勢の変更
             ChangeAttitude();
         }
+
+        //姿勢が直下降の場合
+        if (attitudeType == AttitudeType.Straight)
+        {
+            //タイマーを加算する　＝　チャージを行う
+            attitudeTimer += Time.deltaTime;
+
+            //ゲージ表示を更新
+            imgGauge.DOFillAmount(attitudeTimer / changeTime, 0.1f);
+
+            //タイマーがチャージ時間(満タン)になったら
+            if (attitudeTimer >= changeTime)
+            {
+                //タイマー値をチャージ時間で止めるようにする
+                attitudeTimer = changeTime;
+            }
+        }
+
+        //姿勢が伏せの場合
+        if (attitudeType == AttitudeType.Prone)
+        {
+            //タイマーを減算する
+            attitudeTimer -= Time.deltaTime;
+
+            //ゲージ表示を更新
+            imgGauge.DOFillAmount(attitudeTimer / changeTime, 0.1f);
+
+            //タイマー(チャージ)が0以下になったら
+            if (attitudeTimer <= 0)
+            {
+                //タイマーをリセットし、再度計測できるようにする
+                attitudeTimer = 0;
+            }
+        }
+
     }
 
     /// <summary>
@@ -175,6 +225,9 @@ public class PlayerController : MonoBehaviour
                 //空気抵抗値を上げて落下速度を遅くする
                 rb.drag = 25.0f;
 
+                //ボタンの子オブジェクト画像を回転させる
+                btnChangeAttitude.transform.GetChild(0).DORotate(new Vector3(0, 0, 180), 0.25f);
+
                 //処理を抜ける(次のcaseには処理がはいらない)
                 break;
 
@@ -189,6 +242,9 @@ public class PlayerController : MonoBehaviour
 
                 //空気抵抗値を元に戻して落下速度を戻す
                 rb.drag = 0f;
+
+                //ボタンの子オブジェクトの画像を回転させる
+                btnChangeAttitude.transform.GetChild(0).DORotate(new Vector3(0, 0, 90), 0.25f);
 
                 //処理を抜ける
                 break;
