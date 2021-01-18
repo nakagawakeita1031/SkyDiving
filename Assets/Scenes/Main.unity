@@ -4367,6 +4367,7 @@ MonoBehaviour:
   btnChangeAttitude: {fileID: 223857285}
   attitudeType: 0
   imgGauge: {fileID: 694701577}
+  charge_Completed: 0
 --- !u!114 &6786679126833500962
 MonoBehaviour:
   m_ObjectHideFlags: 0

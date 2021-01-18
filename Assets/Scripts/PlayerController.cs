@@ -61,10 +61,19 @@ public class PlayerController : MonoBehaviour
     private float attitudeTimer;
 
     //姿勢変更が可能になるまでのチャージ時間変数
-    private float changeTime = 2.0f;
+    private float chargeTime = 2.0f;
 
     [SerializeField]
     private Image imgGauge;
+
+    [Header("チャージ完了")]
+    public bool charge_Completed;
+
+    private void Awake()
+    {
+        btnChangeAttitude.interactable = false;
+        charge_Completed = false;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -159,6 +168,7 @@ public class PlayerController : MonoBehaviour
         //DOTweenを利用して、１秒かけて水中から水面へとキャラを移動させる
         transform.DOMoveY(0.05f, 1.0f);
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -176,13 +186,22 @@ public class PlayerController : MonoBehaviour
             attitudeTimer += Time.deltaTime;
 
             //ゲージ表示を更新
-            imgGauge.DOFillAmount(attitudeTimer / changeTime, 0.1f);
+            imgGauge.DOFillAmount(attitudeTimer / chargeTime, 0.1f);
 
             //タイマーがチャージ時間(満タン)になったら
-            if (attitudeTimer >= changeTime)
+            if (attitudeTimer >= chargeTime)
             {
                 //タイマー値をチャージ時間で止めるようにする
-                attitudeTimer = changeTime;
+                attitudeTimer = chargeTime;
+
+                charge_Completed = true;
+
+                if (charge_Completed == true)
+                {
+                    btnChangeAttitude.interactable = true;
+                }
+
+
             }
         }
 
@@ -193,13 +212,24 @@ public class PlayerController : MonoBehaviour
             attitudeTimer -= Time.deltaTime;
 
             //ゲージ表示を更新
-            imgGauge.DOFillAmount(attitudeTimer / changeTime, 0.1f);
+            imgGauge.DOFillAmount(attitudeTimer / chargeTime, 0.1f);
 
             //タイマー(チャージ)が0以下になったら
             if (attitudeTimer <= 0)
             {
                 //タイマーをリセットし、再度計測できるようにする
                 attitudeTimer = 0;
+                //attitudeType = AttitudeType.Straight;
+                //transform.DORotate(straightRotation, 0.25f);
+                //rb.drag = 0f;
+                //btnChangeAttitude.transform.GetChild(0).DORotate(new Vector3(0, 0, 90), 0.25f);
+                charge_Completed = false;
+
+                btnChangeAttitude.interactable = false;
+
+                ChangeAttitude();
+
+
             }
         }
 
