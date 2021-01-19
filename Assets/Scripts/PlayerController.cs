@@ -179,11 +179,13 @@ public class PlayerController : MonoBehaviour
             ChangeAttitude();
         }
 
-        //姿勢が直下降の場合
-        if (attitudeType == AttitudeType.Straight)
+        //姿勢が直下降の場合＆charge_Conpletedがfalseの場合
+        if (attitudeType == AttitudeType.Straight && charge_Completed == false)
         {
             //タイマーを加算する　＝　チャージを行う
             attitudeTimer += Time.deltaTime;
+
+            btnChangeAttitude.interactable = false;
 
             //ゲージ表示を更新
             imgGauge.DOFillAmount(attitudeTimer / chargeTime, 0.1f);
@@ -196,10 +198,8 @@ public class PlayerController : MonoBehaviour
 
                 charge_Completed = true;
 
-                if (charge_Completed == true)
-                {
-                    btnChangeAttitude.interactable = true;
-                }
+                btnChangeAttitude.interactable = true;
+                Debug.Log(charge_Completed);
 
 
             }
@@ -223,7 +223,7 @@ public class PlayerController : MonoBehaviour
                 //transform.DORotate(straightRotation, 0.25f);
                 //rb.drag = 0f;
                 //btnChangeAttitude.transform.GetChild(0).DORotate(new Vector3(0, 0, 90), 0.25f);
-                charge_Completed = false;
+                //charge_Completed = false;
 
                 btnChangeAttitude.interactable = false;
 
@@ -245,6 +245,16 @@ public class PlayerController : MonoBehaviour
         {
             //現在の姿勢が「直滑空」だったら
             case AttitudeType.Straight:
+
+                //未チャージ状態(チャージ中)なら
+                if (charge_Completed == false)
+                {
+                    //以降の処理を行わない＝未チャージ状態なのでチャージ時の処理を行わないようにする
+                    return;
+                }
+
+                //チャージ状態を未チャージ状態にする
+                charge_Completed = false;
 
                 //現在の姿勢を「伏せ」に変更
                 attitudeType = AttitudeType.Prone;
