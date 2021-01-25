@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using Coffee.UIExtensions;
 
 public class PlayerController : MonoBehaviour
 {
@@ -69,6 +70,11 @@ public class PlayerController : MonoBehaviour
     [Header("チャージ完了")]
     public bool charge_Completed;
 
+    [SerializeField]
+    private ShinyEffectForUGUI shinyEffect;
+
+    private Animator anim;
+
     private void Awake()
     {
         btnChangeAttitude.interactable = false;
@@ -89,6 +95,8 @@ public class PlayerController : MonoBehaviour
 
         //ボタンのOnClickイベントにChangeAttitudeメソッドを追加する
         btnChangeAttitude.onClick.AddListener(ChangeAttitude);
+
+        anim = GetComponent<Animator>();
 
     }
 
@@ -199,7 +207,9 @@ public class PlayerController : MonoBehaviour
                 charge_Completed = true;
 
                 btnChangeAttitude.interactable = true;
-                Debug.Log(charge_Completed);
+
+                //満タン時エフェクト
+                shinyEffect.Play(0.5f);
 
 
             }
@@ -268,6 +278,9 @@ public class PlayerController : MonoBehaviour
                 //ボタンの子オブジェクト画像を回転させる
                 btnChangeAttitude.transform.GetChild(0).DORotate(new Vector3(0, 0, 180), 0.25f);
 
+                //伏せの状態に遷移するための条件を指定する(idle→stan)
+                anim.SetBool("Prone", true);
+
                 //処理を抜ける(次のcaseには処理がはいらない)
                 break;
 
@@ -285,6 +298,9 @@ public class PlayerController : MonoBehaviour
 
                 //ボタンの子オブジェクトの画像を回転させる
                 btnChangeAttitude.transform.GetChild(0).DORotate(new Vector3(0, 0, 90), 0.25f);
+
+                //伏せの状態を止めるための遷移の条件を指定する(stan→idle)
+                anim.SetBool("Prone", false);
 
                 //処理を抜ける
                 break;
